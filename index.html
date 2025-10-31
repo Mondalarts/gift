@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎁 Surprise Gift!</title>
+    <style>
+        :root {
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1 {
+            color: var(--color-slate-900);
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .gift-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        p {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .task-list {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 16px;
+        }
+
+        .task-item.completed {
+            color: #28a745;
+        }
+
+        .task-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .btn {
+            background: var(--color-teal-500);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: var(--color-teal-600);
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .shake-instruction {
+            font-size: 24px;
+            color: var(--color-red-500);
+            font-weight: bold;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .tictactoe-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            color: var(--color-slate-900);
+        }
+
+        .cell:hover {
+            background: #e9ecef;
+            transform: scale(1.05);
+        }
+
+        .cell.x {
+            color: #667eea;
+        }
+
+        .cell.o {
+            color: #764ba2;
+        }
+
+        .timer {
+            font-size: 48px;
+            color: var(--color-red-500);
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .final-message {
+            font-size: 28px;
+            color: var(--color-red-500);
+            font-weight: bold;
+            margin: 30px 0;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .troll-video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Welcome -->
+        <div id="screen1" class="screen active">
+            <div class="gift-icon">🎁</div>
+            <h1>Special Gift Waiting!</h1>
+            <p>Complete all tasks to unlock your amazing gift!</p>
+            <div class="task-list">
+                <div class="task-item">
+                    <span class="task-icon">📱</span>
+                    <span>Shake your phone</span>
+                </div>
+                <div class="task-item">
+                    <span class="task-icon">🎯</span>
+                    <span>Complete the meter</span>
+                </div>
+                <div class="task-item">
+                    <span class="task-icon">🎮</span>
+                    <span>Defeat the AI in Tic-Tac-Toe</span>
+                </div>
+            </div>
+            <button class="btn" onclick="startTasks()">Start Tasks</button>
+        </div>
+
+        <!-- Screen 2: Shake Phone -->
+        <div id="screen2" class="screen">
+            <h1>Task 1: Shake Your Phone!</h1>
+            <p class="shake-instruction">📱 SHAKE YOUR PHONE! 📱</p>
+            <p id="shakeCount">Shakes: 0/15</p>
+            <div class="progress-bar">
+                <div id="shakeProgress" class="progress-fill" style="width: 0%">0%</div>
+            </div>
+            <p style="font-size: 14px; color: #999;">Shake vigorously to proceed!</p>
+        </div>
+
+        <!-- Screen 3: Meter Task -->
+        <div id="screen3" class="screen">
+            <h1>Task 2: Fill the Meter!</h1>
+            <p>Click the button to fill the meter to 100%</p>
+            <div class="progress-bar">
+                <div id="meterProgress" class="progress-fill" style="width: 0%">0%</div>
+            </div>
+            <button class="btn" onclick="fillMeter()">Fill Meter</button>
+        </div>
+
+        <!-- Screen 4: Tic-Tac-Toe -->
+        <div id="screen4" class="screen">
+            <h1>Task 3: Defeat Me!</h1>
+            <p>Beat the AI in Tic-Tac-Toe (Good luck! 😈)</p>
+            <div class="tictactoe-board" id="board"></div>
+            <p id="gameStatus" style="margin-top: 20px; font-weight: bold;"></p>
+            <button class="btn btn-secondary" onclick="resetGame()" style="margin-top: 10px;">Reset Game</button>
+        </div>
+
+        <!-- Screen 5: Choose Your Fate -->
+        <div id="screen5" class="screen">
+            <h1>Final Step!</h1>
+            <p>You've completed all tasks! Choose wisely...</p>
+            <button class="btn" id="giftBtn" onclick="tryOpenGift()">🎁 See the Gift</button>
+            <button class="btn btn-secondary" onclick="startTimer()">⏳ Wait 1 Minute</button>
+        </div>
+
+        <!-- Screen 6: Countdown Timer -->
+        <div id="screen6" class="screen">
+            <h1>Please Wait...</h1>
+            <p>Your gift is being prepared...</p>
+            <div class="timer" id="countdown">01:00</div>
+            <p>Almost there! Just a bit longer...</p>
+        </div>
+
+        <!-- Screen 7: The Reveal -->
+        <div id="screen7" class="screen">
+            <h1 class="final-message">😂 YOU JUST WASTED YOUR TIME! 😂</h1>
+            <p>There was no gift! You got pranked! 🤣</p>
+            <video class="troll-video" autoplay loop>
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            </video>
+            <p style="margin-top: 20px;">Share this with your friends and prank them too!</p>
+            <button class="btn" onclick="location.reload()">Prank Someone Else</button>
+        </div>
+    </div>
+
+    <script>
+        let shakeCount = 0;
+        let meterValue = 0;
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = true;
+        let giftButtonClicks = 0;
+
+        // Shake detection
+        let lastX, lastY, lastZ;
+        let lastUpdate = 0;
+
+        function init() {
+            if (window.DeviceMotionEvent) {
+                window.addEventListener('devicemotion', handleMotion);
+            }
+        }
+
+        function handleMotion(event) {
+            const currentTime = new Date().getTime();
+            
+            if ((currentTime - lastUpdate) > 100) {
+                const diffTime = currentTime - lastUpdate;
+                lastUpdate = currentTime;
+
+                const acceleration = event.accelerationIncludingGravity;
+                const x = acceleration.x;
+                const y = acceleration.y;
+                const z = acceleration.z;
+
+                if (lastX !== undefined) {
+                    const deltaX = Math.abs(x - lastX);
+                    const deltaY = Math.abs(y - lastY);
+                    const deltaZ = Math.abs(z - lastZ);
+
+                    if ((deltaX > 15 || deltaY > 15 || deltaZ > 15)) {
+                        onShakeDetected();
+                    }
+                }
+
+                lastX = x;
+                lastY = y;
+                lastZ = z;
+            }
+        }
+
+        function onShakeDetected() {
+            if (document.getElementById('screen2').classList.contains('active')) {
+                shakeCount++;
+                const progress = Math.min((shakeCount / 15) * 100, 100);
+                document.getElementById('shakeCount').textContent = `Shakes: ${shakeCount}/15`;
+                document.getElementById('shakeProgress').style.width = progress + '%';
+                document.getElementById('shakeProgress').textContent = Math.floor(progress) + '%';
+
+                if (shakeCount >= 15) {
+                    setTimeout(() => {
+                        showScreen('screen3');
+                    }, 500);
+                }
+            }
+        }
+
+        function startTasks() {
+            showScreen('screen2');
+            init();
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function fillMeter() {
+            meterValue += Math.floor(Math.random() * 8) + 3;
+            meterValue = Math.min(meterValue, 100);
+            
+            document.getElementById('meterProgress').style.width = meterValue + '%';
+            document.getElementById('meterProgress').textContent = meterValue + '%';
+
+            if (meterValue >= 100) {
+                setTimeout(() => {
+                    showScreen('screen4');
+                    initTicTacToe();
+                }, 800);
+            }
+        }
+
+        function initTicTacToe() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+            board = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', () => handleCellClick(i));
+                boardEl.appendChild(cell);
+            }
+
+            document.getElementById('gameStatus').textContent = 'Your turn! (X)';
+        }
+
+        function handleCellClick(index) {
+            if (board[index] !== '' || !gameActive || currentPlayer !== 'X') return;
+
+            board[index] = 'X';
+            updateBoard();
+
+            if (checkWinner('X')) {
+                document.getElementById('gameStatus').textContent = 'Impossible! You won! 🎉';
+                gameActive = false;
+                setTimeout(() => showScreen('screen5'), 2000);
+                return;
+            }
+
+            if (isBoardFull()) {
+                document.getElementById('gameStatus').textContent = 'Draw! Try again!';
+                gameActive = false;
+                return;
+            }
+
+            currentPlayer = 'O';
+            setTimeout(makeAIMove, 500);
+        }
+
+        function makeAIMove() {
+            const bestMove = getBestMove();
+            board[bestMove] = 'O';
+            updateBoard();
+
+            if (checkWinner('O')) {
+                document.getElementById('gameStatus').textContent = 'AI wins! Try again! 😈';
+                gameActive = false;
+                return;
+            }
+
+            if (isBoardFull()) {
+                document.getElementById('gameStatus').textContent = 'Draw! Try again!';
+                gameActive = false;
+                return;
+            }
+
+            currentPlayer = 'X';
+            document.getElementById('gameStatus').textContent = 'Your turn! (X)';
+        }
+
+        function getBestMove() {
+            let bestScore = -Infinity;
+            let bestMove;
+
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === '') {
+                    board[i] = 'O';
+                    let score = minimax(board, 0, false);
+                    board[i] = '';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = i;
+                    }
+                }
+            }
+
+            return bestMove;
+        }
+
+        function minimax(board, depth, isMaximizing) {
+            if (checkWinner('O')) return 10 - depth;
+            if (checkWinner('X')) return depth - 10;
+            if (isBoardFull()) return 0;
+
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'O';
+                        let score = minimax(board, depth + 1, false);
+                        board[i] = '';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'X';
+                        let score = minimax(board, depth + 1, true);
+                        board[i] = '';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+        function checkWinner(player) {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            return winPatterns.some(pattern => 
+                pattern.every(index => board[index] === player)
+            );
+        }
+
+        function isBoardFull() {
+            return board.every(cell => cell !== '');
+        }
+
+        function updateBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                cell.textContent = board[index];
+                cell.className = 'cell';
+                if (board[index] === 'X') cell.classList.add('x');
+                if (board[index] === 'O') cell.classList.add('o');
+            });
+        }
+
+        function resetGame() {
+            initTicTacToe();
+        }
+
+        function tryOpenGift() {
+            giftButtonClicks++;
+            const btn = document.getElementById('giftBtn');
+            
+            if (giftButtonClicks === 1) {
+                btn.textContent = '🎁 Click Again to See Gift';
+            } else if (giftButtonClicks === 2) {
+                btn.textContent = '🎁 Still Loading...';
+            } else if (giftButtonClicks === 3) {
+                btn.textContent = '🎁 Almost There...';
+            } else {
+                btn.textContent = '🎁 Not Working? Try Wait Button!';
+            }
+        }
+
+        function startTimer() {
+            showScreen('screen6');
+            let timeLeft = 60;
+            
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('countdown').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showScreen('screen7');
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
