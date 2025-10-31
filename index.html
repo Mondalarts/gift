@@ -284,7 +284,7 @@
             <p>Beat the AI in Tic-Tac-Toe (Good luck! 😈)</p>
             <div class="tictactoe-board" id="board"></div>
             <p id="gameStatus" style="margin-top: 20px; font-weight: bold;"></p>
-            <button class="btn btn-secondary" onclick="resetGame()" style="margin-top: 10px;">Reset Game</button>
+            <button class="btn btn-secondary" id="resetBtn" onclick="resetGame()" style="margin-top: 10px;">Reset Game</button>
         </div>
 
         <!-- Screen 5: Choose Your Fate -->
@@ -429,6 +429,7 @@
             if (checkWinner('X')) {
                 document.getElementById('gameStatus').textContent = 'Impossible! You won! 🎉';
                 gameActive = false;
+                updateResetButton('win');
                 setTimeout(() => showScreen('screen5'), 2000);
                 return;
             }
@@ -436,11 +437,12 @@
             if (isBoardFull()) {
                 document.getElementById('gameStatus').textContent = 'Draw! Try again!';
                 gameActive = false;
+                updateResetButton('draw');
                 return;
             }
 
             currentPlayer = 'O';
-            setTimeout(makeAIMove, 500);
+            setTimeout(makeAIMove, 300);
         }
 
         function makeAIMove() {
@@ -451,12 +453,14 @@
             if (checkWinner('O')) {
                 document.getElementById('gameStatus').textContent = 'AI wins! Try again! 😈';
                 gameActive = false;
+                updateResetButton('lose');
                 return;
             }
 
             if (isBoardFull()) {
                 document.getElementById('gameStatus').textContent = 'Draw! Try again!';
                 gameActive = false;
+                updateResetButton('draw');
                 return;
             }
 
@@ -465,6 +469,15 @@
         }
 
         function getBestMove() {
+            // Make AI slightly beatable - 15% chance of random move
+            if (Math.random() < 0.15) {
+                const emptyCells = [];
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') emptyCells.push(i);
+                }
+                return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            }
+
             let bestScore = -Infinity;
             let bestMove;
 
@@ -541,6 +554,21 @@
 
         function resetGame() {
             initTicTacToe();
+            document.getElementById('resetBtn').style.background = '#6c757d';
+        }
+
+        function updateResetButton(result) {
+            const resetBtn = document.getElementById('resetBtn');
+            if (result === 'win') {
+                resetBtn.style.background = '#28a745'; // Green
+                resetBtn.textContent = '🎉 You Won! Play Again';
+            } else if (result === 'lose') {
+                resetBtn.style.background = '#dc3545'; // Red
+                resetBtn.textContent = '😈 AI Won! Try Again';
+            } else if (result === 'draw') {
+                resetBtn.style.background = '#ffc107'; // Yellow
+                resetBtn.textContent = '🤝 Draw! Play Again';
+            }
         }
 
         function tryOpenGift() {
