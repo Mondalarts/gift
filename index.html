@@ -554,7 +554,9 @@
 
         function resetGame() {
             initTicTacToe();
-            document.getElementById('resetBtn').style.background = '#6c757d';
+            const resetBtn = document.getElementById('resetBtn');
+            resetBtn.style.background = '#6c757d';
+            resetBtn.textContent = 'Reset Game';
         }
 
         function updateResetButton(result) {
